@@ -46,7 +46,9 @@ The agent answers customer questions in a professional, polite customer-service 
 │   └── system_instructions.md # Agent instructions (paste into Foundry)
 ├── app/
 │   ├── skynova_client.py     # Shared core: auth, connection, conversation, tool/citation/chart parsing
-│   └── cli.py                # Terminal chat interface
+│   ├── cli.py                # Terminal chat interface
+│   ├── web.py                # Web app (FastAPI backend)
+│   └── static/               # Web front-end (HTML, CSS, JS)
 ├── data_generation/
 │   ├── skynova_data.py       # Shared master data (routes, fleet, performance generator)
 │   └── generate_pdfs.py      # Builds the PDFs + CSV with reportlab
@@ -97,6 +99,25 @@ python app/cli.py
 ```
 Commands: `/new` (new conversation), `/help`, `/exit`.
 
+## 🌐 Web app (EXTRA)
+
+A chat page in the style of a modern product website, served by **FastAPI**. It reuses the same core (`skynova_client.py`), so authentication and agent logic are shared with the terminal client.
+
+![SkyNova web app](docs/web_home.png)
+
+- Large headline, frosted-glass navigation bar and suggestion tiles that send example prompts
+- Chat thread: user bubbles, Markdown answers, tool badges (🔎 🐍 🐙), knowledge-base sources, and Code Interpreter charts shown inline (click to enlarge)
+- Each browser tab gets its own Foundry conversation; **New chat** starts a fresh one
+- Automatic light and dark mode, responsive layout for phones
+
+**Architecture:** browser → `POST /api/chat` (FastAPI) → `SkyNovaAgent.ask()` → Foundry Responses API (`agent_reference`). Charts are downloaded from the Code Interpreter container and served from `/outputs/`.
+
+**Run it**
+```bash
+source .venv/bin/activate
+python app/web.py        # open http://localhost:8000
+```
+
 ### Regenerate the data
 
 ```bash
@@ -111,6 +132,6 @@ python data_generation/generate_pdfs.py
 - [x] Hand the PDFs to the teacher for indexing (Azure AI Search / Foundry IQ)
 - [x] Create the agent in the Foundry portal (gpt-5.4-mini, instructions, Code Interpreter, GitHub MCP, knowledge base)
 - [x] Terminal client with the Foundry SDK (`azure-ai-projects` + `azure-identity`)
-- [ ] (EXTRA) Web interface
+- [x] (EXTRA) Web interface (FastAPI + custom front-end)
 
 > ⚠️ SkyNova Airlines is fictional. All documents were generated for educational purposes.

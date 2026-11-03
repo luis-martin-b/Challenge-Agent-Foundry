@@ -3,5 +3,8 @@ azure-ai-projects>=2.10.0
 azure-identity>=1.19.0
 python-dotenv>=1.0.0
 rich>=13.0.0
+# Web app
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
 # Data generation
 reportlab>=4.0

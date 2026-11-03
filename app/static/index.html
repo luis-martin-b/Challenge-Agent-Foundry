@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SkyNova Nova</title>
+  <meta name="description" content="Chat with Nova, the SkyNova Airlines customer care agent built on Microsoft Foundry.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <nav class="globalnav">
+    <div class="nav-inner">
+      <a class="brand" href="/" aria-label="SkyNova home">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>
+        SkyNova
+      </a>
+      <div class="nav-links">
+        <span>Fares</span><span>Baggage</span><span>Care Promise</span><span>Horizon</span><span class="active">Nova</span>
+      </div>
+      <button class="nav-new" id="newChat" title="New conversation">New chat</button>
+    </div>
+  </nav>
+
+  <main id="main">
+    <!-- Hero (shown until the first message) -->
+    <section class="hero" id="hero">
+      <p class="eyebrow">SkyNova Customer Care</p>
+      <h1>Meet <span class="gradient">Nova.</span></h1>
+      <p class="lead">Every journey, cared for.<br>Answers on fares, baggage, compensation and more. Instantly.</p>
+
+      <div class="tiles">
+        <button class="tile" data-prompt="My MAD–ATH flight arrived 3h20m late because of a crew shortage. What compensation do I get?">
+          <span class="tile-icon">📄</span>
+          <span class="tile-title">Policies & rights.</span>
+          <span class="tile-text">Compensation, baggage, pets, minors, Horizon miles.</span>
+          <span class="tile-cta">Ask about a delay ›</span>
+        </button>
+        <button class="tile" data-prompt="Plot the monthly on-time performance of MAD-CDG and BCN-CDG vs the network average in Q3 2026.">
+          <span class="tile-icon">📊</span>
+          <span class="tile-title">Numbers & charts.</span>
+          <span class="tile-text">Fees, miles and live analysis of our operational data.</span>
+          <span class="tile-cta">See Paris punctuality ›</span>
+        </button>
+        <button class="tile" data-prompt="I can't check in on the app, it says error NV-CHK-502.">
+          <span class="tile-icon">🛟</span>
+          <span class="tile-title">Cases & incidents.</span>
+          <span class="tile-text">Known incidents, case status and new claims.</span>
+          <span class="tile-cta">Report an app error ›</span>
+        </button>
+      </div>
+
+      <div class="chips">
+        <button class="chip" data-prompt="How many miles does a Gold member earn MAD–JFK in Economy Flex?">Miles to New York</button>
+        <button class="chip" data-prompt="Can I take my 6 kg French Bulldog to Bilbao?">Flying with a pet</button>
+        <button class="chip" data-prompt="What's the status of my case #3? I'm Mr. Navarro.">Status of case #3</button>
+        <button class="chip" data-prompt="I'm flying to Paris on 12 November, is there any problem?">Paris on 12 November</button>
+      </div>
+    </section>
+
+    <!-- Conversation -->
+    <section class="thread" id="thread" aria-live="polite"></section>
+  </main>
+
+  <footer class="composer-wrap">
+    <form class="composer" id="composer">
+      <textarea id="input" rows="1" placeholder="Message Nova" aria-label="Message Nova" autocomplete="off"></textarea>
+      <button type="submit" id="send" aria-label="Send" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l-7 7h4.5v9h5v-9H19z"/></svg>
+      </button>
+    </form>
+    <p class="fineprint" id="fineprint">Nova can make mistakes. Fictional airline built for an educational Microsoft Foundry challenge.</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

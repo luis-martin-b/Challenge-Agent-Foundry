@@ -73,25 +73,32 @@ class SkyNovaAgent:
         self.conversation_id = self._openai.conversations.create().id
         return self.conversation_id
 
-    def ask(self, message: str) -> AgentReply:
-        if not self.conversation_id:
-            self.new_conversation()
+    def create_conversation(self) -> str:
+        """Create a conversation without changing the default one (used by the web app, one per browser session)."""
+        return self._openai.conversations.create().id
+
+    def ask(self, message: str, conversation_id: str | None = None) -> AgentReply:
+        """Send a message. Without conversation_id, the default conversation of this client is used (terminal)."""
+        if conversation_id is None:
+            if not self.conversation_id:
+                self.new_conversation()
+            conversation_id = self.conversation_id
         response = self._openai.responses.create(
-            conversation=self.conversation_id,
+            conversation=conversation_id,
             input=message,
             extra_body={"agent_reference": {"name": self.agent_name, "type": "agent_reference"}},
         )
-        response = self._handle_approvals(response)
+        response = self._handle_approvals(response, conversation_id)
         return self._parse(response)
 
-    def _handle_approvals(self, response):
+    def _handle_approvals(self, response, conversation_id: str):
         """If an MCP tool is configured with 'require approval', approve the requests automatically."""
         for _ in range(5):
             requests = [o for o in response.output if o.type == "mcp_approval_request"]
             if not requests:
                 return response
             response = self._openai.responses.create(
-                conversation=self.conversation_id,
+                conversation=conversation_id,
                 input=[{"type": "mcp_approval_response", "approval_request_id": r.id, "approve": True} for r in requests],
                 extra_body={"agent_reference": {"name": self.agent_name, "type": "agent_reference"}},
             )

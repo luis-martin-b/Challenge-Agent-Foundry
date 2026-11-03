@@ -4,6 +4,7 @@
   "features": {
     "ghcr.io/devcontainers/features/azure-cli:1": {}
   },
+  "forwardPorts": [8000],
   "postCreateCommand": "pip install --user -r requirements.txt",
   "remoteEnv": {
     "FOUNDRY_PROJECT_ENDPOINT": "https://foundry-tecnun-resource.services.ai.azure.com/api/projects/foundry-tecnun-project",
