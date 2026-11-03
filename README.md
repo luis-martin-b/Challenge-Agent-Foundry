@@ -33,7 +33,7 @@ The agent answers customer questions in a professional, polite customer-service 
 | **Instructions** | Customer-service persona that follows SkyNova's *CARE* model (Connect, Acknowledge, Resolve, Empower) |
 | **RAG (custom data)** | Fare rules, baggage fees, EU 261 compensation, pets and minors, loyalty programme, network and fleet, Q3 2026 performance report |
 | **Code Interpreter** | Fee and compensation calculations, miles calculations, charts and analysis of operational performance data |
-| **MCP server** | Live external information, such as weather or airport status (TBD) |
+| **MCP server (GitHub)** | Case management: reads known incidents and case status, and creates customer cases as Issues in [`skynova-customer-cases`](https://github.com/luis-martin-b/skynova-customer-cases) |
 
 ## 📁 Repository structure
 
@@ -42,6 +42,8 @@ The agent answers customer questions in a professional, polite customer-service 
 │   ├── pdfs/                 # Knowledge base for the index (7 PDFs)
 │   ├── csv/                  # Performance dataset for Code Interpreter
 │   └── test_questions.md     # Evaluation prompts with expected answers
+├── agent/
+│   └── system_instructions.md # Agent instructions (paste into Foundry)
 ├── data_generation/
 │   ├── skynova_data.py       # Shared master data (routes, fleet, performance generator)
 │   └── generate_pdfs.py      # Builds the PDFs + CSV with reportlab

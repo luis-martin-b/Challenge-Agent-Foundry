@@ -30,12 +30,14 @@ Use these prompts to check that the agent uses each of its capabilities correctl
 - "Calculate the total compensation SkyNova would pay if 150 passengers on MAD–EZE arrived 4h30m late due to a technical fault."
   → 150 × €600 = **€90,000**
 
-## 3. MCP (external / live information)
+## 3. MCP – GitHub (case management in `luis-martin-b/skynova-customer-cases`)
 
-These depend on the MCP server chosen, for example a weather or flight-information MCP.
-
-- "What's the weather forecast in Boston for tomorrow? Should I expect delays on NV600?"
-- "Are there any current alerts at London Heathrow?"
+| # | Prompt | Expected behaviour |
+|---|--------|--------------------|
+| 1 | "I can't check in on the app, it says error NV-CHK-502." | Finds known incident #1: use the web, iOS app or kiosks; no airport fee; fix expected 4 Nov |
+| 2 | "I'm flying to Paris on 12 November, is there any problem?" | Finds incident #2 (ATC strike): free change 10–20 Nov or refund; no EU 261 compensation, but right to care |
+| 3 | "What's the status of my case #3? I'm Mr. Navarro." | Bag located; delivery 31 Oct 18:00–22:00 |
+| 4 | "My bag didn't arrive on NV120 from Madrid to London today. PIR LHRNV10293, booking NV8HJK, I'm Ana Ruiz, Silver member." | Explains €50/day (max 5 days), asks for confirmation, then creates an issue with labels `baggage` + `created-by-agent` and gives the case number |
 
 ## 4. Combined (RAG + Code Interpreter)
 
