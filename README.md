@@ -4,6 +4,8 @@ An agentic solution built on **Microsoft Foundry** with the **Microsoft Foundry 
 
 ---
 
+> 📘 **Step-by-step study guide (Spanish):** [docs/GUIA_PASO_A_PASO.md](docs/GUIA_PASO_A_PASO.md). It includes how to restart the web app after rebooting.
+
 ## 📋 Challenge instructions
 
 In this challenge you build an agentic solution for a scenario of your choice. It must meet these requirements:
