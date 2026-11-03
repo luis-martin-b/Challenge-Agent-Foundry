@@ -78,7 +78,16 @@ The client is built with the **Microsoft Foundry SDK** (`azure-ai-projects` 2.x)
 4. **Responses:** `responses.create(conversation=..., input=..., extra_body={"agent_reference": {...}})`.
 5. **Parsing:** the client shows which tools were used (🔎 knowledge base, 🐍 Code Interpreter, 🐙 GitHub) and decodes knowledge-base citations into PDF names. It downloads charts from the Code Interpreter container to `outputs/` and opens them.
 
-**Run it**
+**Run it in GitHub Codespaces (recommended, nothing to install)**
+1. On GitHub: **Code → Codespaces → Create codespace on main**. Python, the Azure CLI and the requirements install automatically.
+2. In the Codespace terminal:
+   ```bash
+   az login --use-device-code     # open the link, enter the code, sign in with your Foundry account
+   python app/cli.py
+   ```
+   Charts are saved to `outputs/`. Click them in the Explorer to view them.
+
+**Run it locally**
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
