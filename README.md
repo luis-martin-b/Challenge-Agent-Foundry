@@ -129,12 +129,4 @@ pip install -r requirements.txt
 python data_generation/generate_pdfs.py
 ```
 
-## 🗺️ Roadmap
-
-- [x] Synthetic knowledge base (PDFs + CSV)
-- [x] Hand the PDFs to the teacher for indexing (Azure AI Search / Foundry IQ)
-- [x] Create the agent in the Foundry portal (gpt-5.4-mini, instructions, Code Interpreter, GitHub MCP, knowledge base)
-- [x] Terminal client with the Foundry SDK (`azure-ai-projects` + `azure-identity`)
-- [x] (EXTRA) Web interface (FastAPI + custom front-end)
-
 > ⚠️ SkyNova Airlines is fictional. All documents were generated for educational purposes.
