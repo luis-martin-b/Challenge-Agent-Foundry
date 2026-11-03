@@ -108,6 +108,7 @@ A chat page in the style of a modern product website, served by **FastAPI**. It 
 ![SkyNova web app](docs/web_home.png)
 
 - Large headline, frosted-glass navigation bar and suggestion tiles that send example prompts
+- **Chat history** sidebar: every conversation is saved (`history/*.json`, local and git-ignored). You can reopen a chat and keep talking, because the Foundry conversation keeps the context, or delete it
 - Chat thread: user bubbles, Markdown answers, tool badges (🔎 🐍 🐙), knowledge-base sources, and Code Interpreter charts shown inline (click to enlarge)
 - Each browser tab gets its own Foundry conversation; **New chat** starts a fresh one
 - Automatic light and dark mode, responsive layout for phones

@@ -77,6 +77,9 @@ class SkyNovaAgent:
         """Create a conversation without changing the default one (used by the web app, one per browser session)."""
         return self._openai.conversations.create().id
 
+    def delete_conversation(self, conversation_id: str) -> None:
+        self._openai.conversations.delete(conversation_id)
+
     def ask(self, message: str, conversation_id: str | None = None) -> AgentReply:
         """Send a message. Without conversation_id, the default conversation of this client is used (terminal)."""
         if conversation_id is None:

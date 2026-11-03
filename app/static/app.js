@@ -1,30 +1,30 @@
-// SkyNova Nova - chat front-end. Talks to the FastAPI backend (app/web.py).
+// SkyNova Customer Care - chat front-end. Talks to the FastAPI backend (app/web.py).
 const $ = (s) => document.querySelector(s);
 const thread = $("#thread"), hero = $("#hero"), input = $("#input"), send = $("#send"), form = $("#composer");
+const historyList = $("#history"), historyEmpty = $("#historyEmpty");
 const TOOL_LABELS = { knowledge: "🔎 Knowledge base", code: "🐍 Code Interpreter", github: "🐙 GitHub", other: "🔧 Tool" };
+const WIDE = window.matchMedia("(min-width: 1100px)");
 let busy = false;
 
-// The conversation id is kept per browser tab so a page refresh keeps the chat context.
+// Small wrapper around browser storage (it can be unavailable in private mode)
 const store = {
-  get() { try { return sessionStorage.getItem("nova.conversation"); } catch { return null; } },
-  set(v) { try { v ? sessionStorage.setItem("nova.conversation", v) : sessionStorage.removeItem("nova.conversation"); } catch {} },
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} },
 };
-let conversationId = store.get();
+let conversationId = null;
 
 fetch("/api/info").then((r) => r.json()).then((i) => {
   $("#fineprint").textContent = `Nova · agent ${i.agent} v${i.version} on Microsoft Foundry (${i.model}). Nova can make mistakes. Fictional airline built for an educational challenge.`;
 }).catch(() => {});
 
+// ------------------------------------------------------------------ rendering helpers
 function el(tag, cls, html) {
   const e = document.createElement(tag);
   if (cls) e.className = cls;
   if (html !== undefined) e.innerHTML = html;
   return e;
 }
-
-function renderMarkdown(text) {
-  return DOMPurify.sanitize(marked.parse(text || "", { breaks: true, gfm: true }));
-}
+const renderMarkdown = (text) => DOMPurify.sanitize(marked.parse(text || "", { breaks: true, gfm: true }));
 
 function addUser(text) {
   const m = el("div", "msg user");
@@ -32,15 +32,19 @@ function addUser(text) {
   b.textContent = text;
   m.appendChild(b);
   thread.appendChild(m);
-  scroll();
 }
 
-function addAgentShell() {
+function makeAgent() {
   const m = el("div", "msg agent");
-  m.innerHTML = `<div class="agent-head"><div class="avatar">N</div><span class="agent-name">Nova</span>
-    <span class="status-line">Thinking…</span></div>
-    <div class="content"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  m.innerHTML = `<div class="agent-head"><div class="avatar">N</div><span class="agent-name">Nova</span></div><div class="content"></div>`;
   thread.appendChild(m);
+  return m;
+}
+
+function addAgentPending() {
+  const m = makeAgent();
+  m.querySelector(".agent-head").insertAdjacentHTML("beforeend", `<span class="status-line">Thinking…</span>`);
+  m.querySelector(".content").innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
   scroll();
   // Friendly status updates while the agent works (it may search, run code or call GitHub)
   const steps = ["Thinking…", "Checking SkyNova policies…", "Working on it…", "Almost there…"];
@@ -96,12 +100,14 @@ function fillAgent(m, data) {
     }
     m.appendChild(s);
   }
-  scroll();
 }
 
 function openLightbox(src) {
   const lb = el("div", "lightbox");
-  lb.innerHTML = `<img src="${src}" alt="Chart">`;
+  const img = el("img");
+  img.src = src;
+  img.alt = "Chart";
+  lb.appendChild(img);
   lb.addEventListener("click", () => lb.remove());
   document.body.appendChild(lb);
 }
@@ -110,6 +116,88 @@ function scroll() {
   requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }));
 }
 
+// ------------------------------------------------------------------ chat history (sidebar)
+function formatDate(iso) {
+  if (!iso) return "";
+  const d = new Date(iso), now = new Date();
+  const sameDay = d.toDateString() === now.toDateString();
+  return sameDay ? d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                 : d.toLocaleDateString([], { day: "numeric", month: "short" });
+}
+
+async function refreshHistory() {
+  let chats = [];
+  try { chats = await (await fetch("/api/history")).json(); } catch {}
+  historyList.innerHTML = "";
+  historyEmpty.style.display = chats.length ? "none" : "";
+  for (const c of chats) {
+    const li = el("li");
+    li.dataset.id = c.id;
+    if (c.id === conversationId) li.classList.add("active");
+    const text = el("span", "h-text");
+    const title = el("span", "h-title");
+    title.textContent = c.title;
+    const date = el("span", "h-date");
+    date.textContent = formatDate(c.updated);
+    text.append(title, date);
+    const del = el("button", "h-del", "✕");
+    del.title = "Delete chat";
+    del.setAttribute("aria-label", "Delete chat");
+    del.addEventListener("click", (e) => { e.stopPropagation(); deleteChat(c.id, c.title); });
+    li.append(text, del);
+    li.addEventListener("click", () => openChat(c.id));
+    historyList.appendChild(li);
+  }
+}
+
+async function openChat(id) {
+  if (busy) return;
+  const r = await fetch(`/api/history/${encodeURIComponent(id)}`);
+  if (!r.ok) { store.set("nova.conversation", null); return refreshHistory(); }
+  const chat = await r.json();
+  conversationId = id;
+  store.set("nova.conversation", id);
+  hero.style.display = "none";
+  thread.innerHTML = "";
+  for (const msg of chat.messages) {
+    if (msg.role === "user") addUser(msg.text);
+    else fillAgent(makeAgent(), msg);
+  }
+  markActive();
+  if (!WIDE.matches) setSidebar(false);
+  scroll();
+  input.focus();
+}
+
+async function deleteChat(id, title) {
+  if (!confirm(`Delete "${title}"?`)) return;
+  await fetch(`/api/history/${encodeURIComponent(id)}`, { method: "DELETE" });
+  if (id === conversationId) newChat();
+  refreshHistory();
+}
+
+function markActive() {
+  historyList.querySelectorAll("li").forEach((li) => li.classList.toggle("active", li.dataset.id === conversationId));
+}
+
+function setSidebar(open) {
+  document.body.classList.toggle("sidebar-open", open);
+  store.set("nova.sidebar", open ? "open" : "closed");
+}
+
+function newChat() {
+  if (busy) return;
+  conversationId = null;
+  store.set("nova.conversation", null);
+  thread.innerHTML = "";
+  hero.style.display = "";
+  markActive();
+  if (!WIDE.matches) setSidebar(false);
+  window.scrollTo({ top: 0 });
+  input.focus();
+}
+
+// ------------------------------------------------------------------ sending messages
 async function ask(text) {
   text = text.trim();
   if (!text || busy) return;
@@ -118,7 +206,7 @@ async function ask(text) {
   input.value = "";
   autosize();
   addUser(text);
-  const { m, stop } = addAgentShell();
+  const { m, stop } = addAgentPending();
   try {
     const r = await fetch("/api/chat", {
       method: "POST",
@@ -128,11 +216,15 @@ async function ask(text) {
     const data = await r.json();
     if (!r.ok) throw new Error(data.detail || `HTTP ${r.status}`);
     conversationId = data.conversation_id;
-    store.set(conversationId);
+    store.set("nova.conversation", conversationId);
     fillAgent(m, data);
+    scroll();
+    refreshHistory();
   } catch (e) {
     m.querySelector(".status-line")?.remove();
-    m.querySelector(".content").innerHTML = `<p class="error-text">Sorry, something went wrong: ${DOMPurify.sanitize(e.message)}</p>`;
+    const p = el("p", "error-text");
+    p.textContent = `Sorry, something went wrong: ${e.message}`;
+    m.querySelector(".content").replaceChildren(p);
   } finally {
     stop();
     busy = false;
@@ -153,15 +245,16 @@ input.addEventListener("keydown", (e) => {
 });
 form.addEventListener("submit", (e) => { e.preventDefault(); ask(input.value); });
 document.querySelectorAll("[data-prompt]").forEach((b) => b.addEventListener("click", () => ask(b.dataset.prompt)));
+$("#newChat").addEventListener("click", newChat);
+$("#newChatSide").addEventListener("click", newChat);
+$("#toggleSidebar").addEventListener("click", () => setSidebar(!document.body.classList.contains("sidebar-open")));
+$("#scrim").addEventListener("click", () => setSidebar(false));
 
-$("#newChat").addEventListener("click", () => {
-  if (busy) return;
-  conversationId = null;
-  store.set(null);
-  thread.innerHTML = "";
-  hero.style.display = "";
-  window.scrollTo({ top: 0 });
-  input.focus();
+// ------------------------------------------------------------------ start-up
+// Sidebar open by default on wide screens (remembered per browser); closed on phones
+setSidebar(WIDE.matches && store.get("nova.sidebar") !== "closed");
+refreshHistory().then(() => {
+  const last = store.get("nova.conversation");
+  if (last) openChat(last);
 });
-
 input.focus();

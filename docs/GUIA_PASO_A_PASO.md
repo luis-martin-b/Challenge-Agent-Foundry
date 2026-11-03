@@ -350,14 +350,18 @@ Endpoints:
 - `POST /api/conversation`: crea una conversación nueva
 - `POST /api/chat`: envía un mensaje y devuelve la respuesta
 - `/outputs/...`: sirve los gráficos descargados
+- `GET /api/history`, `GET /api/history/{id}` y `DELETE /api/history/{id}`: historial de chats
+
+**Historial de chats:** cada conversación se guarda en `history/<conversation_id>.json` (en local, ignorado por Git), con el título (el primer mensaje), las fechas y todos los mensajes (texto, herramientas, fuentes y gráficos). La barra lateral los lista y, al abrir uno, se repinta entero. Si sigues escribiendo, el agente **recuerda el contexto**, porque se reutiliza el mismo `conversation_id` de Foundry. Al borrar un chat se elimina el JSON y también la conversación en Foundry. El chat abierto se recuerda en `localStorage`, así que recargar la página no lo pierde.
 
 Detalles:
-- Un único cliente autenticado para todo el servidor, y **una conversación por pestaña** (el id se guarda en `sessionStorage`).
+- Un único cliente autenticado para todo el servidor, y **una conversación de Foundry por chat**.
 - Los endpoints son `def` (no `async`), así que FastAPI los ejecuta en un *thread pool* y la llamada bloqueante al SDK no congela el servidor.
 - Para eso se modificó el núcleo: `ask(message, conversation_id=...)`.
 
 ### 10.3 Diseño (estilo apple.com)
-- Fuente del sistema (San Francisco), mucho espacio en blanco, titular grande "Meet **Nova.**" con degradado.
+- Fuente del sistema (San Francisco), mucho espacio en blanco, titular grande "**SkyNova** Customer Care" con "SkyNova" en degradado azul.
+- Barra lateral de historial (☰ para abrir o cerrar; en el móvil se superpone al contenido).
 - Barra de navegación translúcida (`backdrop-filter: blur`), tarjetas con esquinas redondeadas y sombra suave, botones tipo píldora.
 - Burbujas azules para el usuario, texto limpio para Nova, badges de herramientas y gráficos integrados (con zoom).
 - **Modo oscuro** automático (`prefers-color-scheme`) y diseño **responsive** para móvil.
@@ -377,6 +381,7 @@ Detalles:
 | `.venv/` | ❌ | Entorno virtual: Python + librerías (~100 MB). Se recrea con `pip install -r requirements.txt` |
 | `.env` | ❌ | Configuración personal (endpoint, nombre del agente). La plantilla es `.env.example` |
 | `outputs/` | ❌ | Gráficos generados en ejecución |
+| `history/` | ❌ | Historial de chats de la web (un JSON por conversación) |
 
 ### 11.2 El entorno virtual (venv)
 - Es un Python privado del proyecto, con sus propias librerías en `.venv/lib/python3.13/site-packages/`.
