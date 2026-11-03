@@ -6,14 +6,16 @@
 
 ## 🚀 Chuleta rápida: volver a abrir la web después de reiniciar el Mac
 
-Abre la app **Terminal** y pega esto:
+Abre la app **Terminal** y pega **esta única línea** (todo en una; si algún paso falla, se para):
 
 ```bash
-cd ~/Desktop/"Obsidian Master/Masters/01 Courses/01 Cloud Computing/03 Unai Azure/Challenge 4/Challenge-Agent-Foundry"
-git pull                      # trae los cambios que hayas hecho en GitHub
-source .venv/bin/activate     # activa el entorno virtual de Python
-python app/web.py             # arranca el servidor web
+cd "$HOME/Desktop/Obsidian Master/Masters/01 Courses/01 Cloud Computing/03 Unai Azure/Challenge 4/Challenge-Agent-Foundry" && git pull && source .venv/bin/activate && python app/web.py
 ```
+
+Qué hace cada parte: `cd` entra en la carpeta del proyecto, `git pull` trae los cambios de GitHub, `source .venv/bin/activate` activa el entorno virtual y `python app/web.py` arranca el servidor.
+
+> ⚠️ No pegues los comandos en varias líneas con comentarios (`# ...`): a veces el `cd` no se ejecuta y todo lo demás falla (`not a git repository`, `.venv/bin/activate: No such file`, `python: command not found`). Si el prompt sigue mostrando `~`, es que no has entrado en la carpeta.
+> `python` solo existe **con el venv activado**; fuera de él, el Mac solo tiene `python3`.
 
 Cuando aparezca `SkyNova web app -> http://localhost:8000`, abre **http://localhost:8000** en el navegador.
 
