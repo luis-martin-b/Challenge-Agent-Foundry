@@ -44,6 +44,9 @@ The agent answers customer questions in a professional, polite customer-service 
 │   └── test_questions.md     # Evaluation prompts with expected answers
 ├── agent/
 │   └── system_instructions.md # Agent instructions (paste into Foundry)
+├── app/
+│   ├── skynova_client.py     # Shared core: auth, connection, conversation, tool/citation/chart parsing
+│   └── cli.py                # Terminal chat interface
 ├── data_generation/
 │   ├── skynova_data.py       # Shared master data (routes, fleet, performance generator)
 │   └── generate_pdfs.py      # Builds the PDFs + CSV with reportlab
@@ -64,6 +67,27 @@ The agent answers customer questions in a professional, polite customer-service 
 
 All data is internally consistent: routes, distances, compensation bands and fares match across documents.
 
+## 💻 Terminal client
+
+The client is built with the **Microsoft Foundry SDK** (`azure-ai-projects` 2.x) and calls the agent through the OpenAI-compatible **Responses API** with an `agent_reference`.
+
+**How it works**
+1. **Authentication:** `DefaultAzureCredential` (Microsoft Entra ID). Locally it uses your `az login` session; once deployed it can use a managed identity. No API keys are stored in the code.
+2. **Connection:** `AIProjectClient(endpoint, credential)` checks that the agent exists with `agents.get()`, and `get_openai_client()` returns an authenticated client.
+3. **Conversation:** `conversations.create()` keeps multi-turn memory on the Foundry side. `/new` starts a fresh one.
+4. **Responses:** `responses.create(conversation=..., input=..., extra_body={"agent_reference": {...}})`.
+5. **Parsing:** the client shows which tools were used (🔎 knowledge base, 🐍 Code Interpreter, 🐙 GitHub) and decodes knowledge-base citations into PDF names. It downloads charts from the Code Interpreter container to `outputs/` and opens them.
+
+**Run it**
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env          # set FOUNDRY_PROJECT_ENDPOINT and FOUNDRY_AGENT_NAME
+az login                      # same account as the Foundry project
+python app/cli.py
+```
+Commands: `/new` (new conversation), `/help`, `/exit`.
+
 ### Regenerate the data
 
 ```bash
@@ -75,9 +99,9 @@ python data_generation/generate_pdfs.py
 ## 🗺️ Roadmap
 
 - [x] Synthetic knowledge base (PDFs + CSV)
-- [ ] Hand the PDFs to the teacher for indexing (Azure AI Search)
-- [ ] Create the agent in the Foundry portal (model, instructions, Code Interpreter, MCP, AI Search index)
-- [ ] Terminal client with the Foundry SDK (`azure-ai-projects` + `azure-identity`)
+- [x] Hand the PDFs to the teacher for indexing (Azure AI Search / Foundry IQ)
+- [x] Create the agent in the Foundry portal (gpt-5.4-mini, instructions, Code Interpreter, GitHub MCP, knowledge base)
+- [x] Terminal client with the Foundry SDK (`azure-ai-projects` + `azure-identity`)
 - [ ] (EXTRA) Web interface
 
 > ⚠️ SkyNova Airlines is fictional. All documents were generated for educational purposes.

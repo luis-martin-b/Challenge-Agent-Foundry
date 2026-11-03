@@ -1,1 +1,7 @@
+# Agent client
+azure-ai-projects>=2.10.0
+azure-identity>=1.19.0
+python-dotenv>=1.0.0
+rich>=13.0.0
+# Data generation
 reportlab>=4.0
