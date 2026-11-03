@@ -452,59 +452,8 @@ python app/web.py           # o python app/cli.py
 
 ## 14. Preguntas para probar el agente (RAG + CSV)
 
-Preguntas pensadas para exprimir al máximo la **knowledge base** (los 7 PDFs) y el **CSV** (Code Interpreter). Muchas obligan a cruzar varios documentos o a combinar búsqueda y cálculo. Se pueden hacer en inglés o en español.
-
-### 14.1 RAG: un documento
-1. What fare families does SkyNova offer, and which ones allow free date changes?
-2. How much does it cost to add a cabin bag to an Economy Basic fare on a European flight, online and at the gate?
-3. When does online check-in open and close for a long-haul flight? And when does the boarding gate close?
-4. Can I carry two 120 Wh power banks in my hand luggage?
-5. My flight MAD–FCO is delayed 2h30m at departure. Am I entitled to a meal voucher, and for how much?
-6. I'm 30 weeks pregnant with twins. Can I fly to Mexico City next week?
-7. My 13-year-old son wants to fly alone to London. Is the unaccompanied minor service mandatory?
-8. Can I take my cat in the cabin on a flight to New York? How much does it cost?
-9. What lounges does SkyNova have in Madrid, and what are their opening hours?
-10. How much does Wi-Fi streaming cost on a long-haul flight? Is messaging free?
-11. What's the price of the meal deal on board, and is there a discount if I pre-order?
-12. What are the opening hours of the live chat, and how quickly do you reply to emails?
-13. What new route is SkyNova launching this winter, and with which aircraft?
-14. How many aircraft does SkyNova have, and which one has Premium Economy?
-
-### 14.2 RAG: cruzando varios documentos
-15. My flight Madrid–Tenerife North arrived 3h10m late due to a technical fault. How much compensation do I get, and why? *(distancia en OPS-05 + bandas en CX-02)*
-16. And if it had been Madrid–Munich with the same delay?
-17. I was a volunteer to give up my seat on an overbooked MAD–JFK flight. What do I receive?
-18. SkyNova told me 10 days before departure that my flight is cancelled. The new flight leaves 1 hour earlier and arrives 3 hours later. Do I get compensation?
-19. I paid €2,400 for Business on MAD–EZE but was moved to Economy. What refund am I entitled to?
-20. I had to pay a hotel in London myself because of a cancellation. What's the maximum SkyNova reimburses per night?
-21. I'm a Platinum member and my bag was delayed 5 days. How much can I claim for essentials in total?
-22. Which flight number and aircraft fly Madrid–Athens, how long is the flight, and what compensation band does it fall in?
-23. Can I take my bike to Rome? How much does it cost online, and does it count towards my baggage allowance?
-24. I'm a Gold member flying Economy Classic to Miami. How many checked bags can I take, and can I use the lounge?
-
-### 14.3 RAG + cálculo (Code Interpreter)
-25. How many Horizon miles does a Silver member earn on a round trip MAD–MEX in Business? Would those flights be enough to reach Gold status?
-26. I have 60,000 miles and want a one-way Business award to Buenos Aires in November. Do I have enough? If not, how much would it cost to buy the missing miles?
-27. Three of us flew MAD–ATH and arrived 3h20m late because of a crew shortage. How much compensation in total? And if we chose vouchers instead of cash?
-28. Compare the total cost of changing the date of a MAD–JFK ticket on Classic vs Flex if the new fare is €80 more expensive.
-29. I fly MAD–LHR on Economy Classic and want to add 2 extra checked bags and a bicycle online. What is the total per direction? And at the airport?
-30. A family of 2 adults on Economy Flex, 1 child (8) and 1 infant flies MAD–CDG round trip. How many Horizon miles do the adults earn in total if one of them is Gold?
-
-### 14.4 CSV: análisis de datos y gráficos
-31. Which 3 routes had the best and the worst on-time performance in Q3 2026? Show a bar chart of all routes.
-32. Plot the monthly on-time performance of the Paris routes (MAD-CDG, BCN-CDG) vs the network average in Q3 2026.
-33. Compare Q3 2026 vs Q3 2025 on-time performance by route. Which routes improved the most, and which got worse?
-34. Which 5 routes had the most complaints per 10,000 passengers in Q3 2026? Show a bar chart.
-35. Compare load factor, on-time performance and mishandled bags per 1,000 passengers by haul type (Domestic, Europe, Long-haul).
-36. Is there a correlation between on-time performance and NPS? Plot a scatter with a regression line.
-37. How many flights were cancelled each month in Q3 2026? Which month was the worst?
-38. Which were the 3 busiest routes by passengers in Q3 2026? And the busiest long-haul route?
-39. Show a heatmap of on-time performance by route and month for Q3 2026.
-40. What was the average arrival delay of delayed flights by haul type? Show it in a chart.
-
-### 14.5 RAG + CSV combinados
-41. Which route had the worst on-time performance in Q3 2026, and how much compensation per passenger would apply if one of its flights arrived 3 hours late because of a technical fault?
-42. Compare the August on-time performance of the Paris routes with the network, and explain the cause according to the performance report.
-43. How far was MAD-CDG from the 2026 on-time performance target in Q3, and what actions has SkyNova planned to improve it?
-44. The report says long-haul has more mishandled bags. Check it with the data, and tell me what a passenger can claim if their bag is delayed.
-45. Using the data, which month of Q3 2026 would a passenger have been most likely to receive EU 261 compensation? Explain which delay causes do and don't give the right to compensation.
+1. My flight Madrid–Tenerife North arrived 3h10m late due to a technical fault. How much compensation do I get, and why?
+2. How many Horizon miles does a Silver member earn on a round trip MAD–MEX in Business? Would that be enough to reach Gold status?
+3. Plot the monthly on-time performance of the Paris routes (MAD-CDG, BCN-CDG) vs the network average in Q3 2026.
+4. Compare Q3 2026 vs Q3 2025 on-time performance by route. Which routes improved the most, and which got worse?
+5. Which route had the worst on-time performance in Q3 2026, and what compensation would apply if one of its flights arrived 3 hours late because of a technical fault?
