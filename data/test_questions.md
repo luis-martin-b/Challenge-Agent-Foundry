@@ -41,5 +41,5 @@ Use these prompts to check that the agent uses each of its capabilities correctl
 
 ## 4. Combined (RAG + Code Interpreter)
 
-- "I fly MAD–FCO on an Economy Classic fare with my infant, and I want to add 3 extra checked bags online. What is the total extra cost per direction?"
-  → infant €30 + extra bags €35 + €50 + €90 = **€205**
+- "I fly MAD–FCO on an Economy Classic fare with my infant (under 2). How much will I pay per direction for the infant's ticket plus 3 extra checked bags bought online?"
+  → infant fare €30 + extra bags €35 + €50 + €90 = **€205** (the infant's own 10 kg bag, stroller and car seat are free)
