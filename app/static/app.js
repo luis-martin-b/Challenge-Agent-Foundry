@@ -3,7 +3,7 @@ const $ = (s) => document.querySelector(s);
 const thread = $("#thread"), hero = $("#hero"), input = $("#input"), send = $("#send"), form = $("#composer");
 const historyList = $("#history"), historyEmpty = $("#historyEmpty");
 const TOOL_LABELS = { knowledge: "🔎 Knowledge base", code: "🐍 Code Interpreter", github: "🐙 GitHub", other: "🔧 Tool" };
-const WIDE = window.matchMedia("(min-width: 1100px)");
+const WIDE = window.matchMedia("(min-width: 900px)");
 let busy = false;
 
 // Small wrapper around browser storage (it can be unavailable in private mode)
@@ -246,6 +246,8 @@ input.addEventListener("keydown", (e) => {
 form.addEventListener("submit", (e) => { e.preventDefault(); ask(input.value); });
 document.querySelectorAll("[data-prompt]").forEach((b) => b.addEventListener("click", () => ask(b.dataset.prompt)));
 $("#newChat").addEventListener("click", newChat);
+// The logo takes you back to the home screen (title + tiles) without reloading; history stays in the sidebar
+$("#brand").addEventListener("click", (e) => { e.preventDefault(); newChat(); });
 $("#newChatSide").addEventListener("click", newChat);
 $("#toggleSidebar").addEventListener("click", () => setSidebar(!document.body.classList.contains("sidebar-open")));
 $("#scrim").addEventListener("click", () => setSidebar(false));
@@ -253,8 +255,7 @@ $("#scrim").addEventListener("click", () => setSidebar(false));
 // ------------------------------------------------------------------ start-up
 // Sidebar open by default on wide screens (remembered per browser); closed on phones
 setSidebar(WIDE.matches && store.get("nova.sidebar") !== "closed");
-refreshHistory().then(() => {
-  const last = store.get("nova.conversation");
-  if (last) openChat(last);
-});
+// Always start on the home screen; previous chats are one click away in the sidebar
+store.set("nova.conversation", null);
+refreshHistory();
 input.focus();
